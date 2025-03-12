@@ -5,9 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-type RoleAccess struct {
+type Role struct {
 	ID      uuid.UUID `gorm:"type:char(36);primary_key;"`
 	Name    string
-	GroupID uuid.UUID `gorm:"type:char(36)"`
 	gorm.Model
 }

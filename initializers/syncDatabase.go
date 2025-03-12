@@ -9,9 +9,7 @@ func SyncDatabase() {
 	err := DB.AutoMigrate(
 		&models.SignatureType{},
 		&models.Payment{},
-		&models.UserRole{},
-		&models.RoleAccess{},
-		&models.Membership{},
+		&models.Role{},
 		&models.Company{},
 		&models.Customer{},
 		&models.Fee{},
@@ -20,8 +18,6 @@ func SyncDatabase() {
 		&models.Spent{},
 		&models.SpentType{},
 		&models.User{},
-		&models.Collection{},
-		&models.CollectionDetail{},
 	)
 	if err != nil {
 		fmt.Println(err)

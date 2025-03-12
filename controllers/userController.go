@@ -76,11 +76,14 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
+	var role models.Role
+	initializers.DB.First(&role, "name = ?", "User")
+
 	//Create User
 	user := models.User{
 		ID:              uuid.New(),
 		CompanyId:       uuid.MustParse(body.CompanyID),
-		IsAdmin:         body.IsAdmin,
+		RoleId:          role.ID,
 		IsNew:           true,
 		FirstName:       body.FirstName,
 		LastName:        body.LastName,

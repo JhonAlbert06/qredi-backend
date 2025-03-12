@@ -38,6 +38,9 @@ func main() {
 
 	r.GET("/dashboard/:id", middleware.RequireAuth, controllers.Dashboard)
 
+	//Company routes
+	r.POST("/company", controllers.CreateCompany)
+
 	//User routes
 	r.POST("/user/signup", controllers.SignUp)
 	r.POST("/user/login", controllers.Login)
@@ -46,9 +49,6 @@ func main() {
 	r.GET("/user/loadUser", middleware.RequireAuth, controllers.LoadUser)
 	r.PUT("/user/changeUserImage", middleware.RequireAuth, controllers.UpdateUserImage)
 	r.GET("/image/user/:id", controllers.GetUserImage)
-
-	//Company routes
-	r.POST("/company", controllers.CreateCompany)
 
 	//Customer routes
 	r.POST("/customer", middleware.RequireAuth, controllers.CreateCustomer)
@@ -90,9 +90,6 @@ func main() {
 	// Spent Type routes
 	r.GET("/spent/type", middleware.RequireAuth, controllers.GetAllTypesSpent)
 	r.POST("/spent/type", middleware.RequireAuth, controllers.CreateTypeSpent)
-
-	// Collection Routes
-	r.POST("/collection", middleware.RequireAuth, controllers.CreateCollection)
 
 	err := r.Run()
 	if err != nil {

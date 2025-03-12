@@ -8,7 +8,7 @@ import (
 type User struct {
 	ID              uuid.UUID `gorm:"type:char(36);primary_key;"`
 	CompanyId       uuid.UUID `gorm:"type:char(36)"`
-	IsAdmin         bool
+	RoleId          uuid.UUID `gorm:"type:char(36)"`
 	IsNew           bool
 	FirstName       string
 	LastName        string

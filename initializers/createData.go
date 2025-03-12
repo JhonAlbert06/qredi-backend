@@ -1,8 +1,9 @@
 package initializers
 
 import (
-	"github.com/google/uuid"
 	"prestamosbackend/models"
+
+	"github.com/google/uuid"
 )
 
 func CreateData() {
@@ -16,4 +17,14 @@ func CreateData() {
 	for _, Stype := range spentType {
 		DB.Create(&Stype)
 	}
+
+	role := []models.Role{
+		{ID: uuid.New(), Name: "Admin"},
+		{ID: uuid.New(), Name: "User"},
+	}
+
+	for _, r := range role {
+		DB.Create(&r)
+	}
+
 }
