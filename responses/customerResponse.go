@@ -15,8 +15,6 @@ type CustomerResponse struct {
 	Phone       string          `json:"phone" form:"phone"`
 	CivilStatus string          `json:"civilStatus" form:"civilStatus"`
 	Reference   string          `json:"reference" form:"reference"`
-	Latitude    *string         `json:"latitude" form:"latitude"`
-	Longitude   *string         `json:"longitude" form:"longitude"`
 }
 
 func NewCustomerResponse(customer models.Customer) *CustomerResponse {
@@ -28,6 +26,11 @@ func NewCustomerResponse(customer models.Customer) *CustomerResponse {
 		return nil
 	}
 
+	var civilStatus models.CivilStatus
+	if err := db.Where("id = ?", customer.CivilStatusId).First(&civilStatus).Error; err != nil {
+		return nil
+	}
+	
 	return &CustomerResponse{
 		ID:          customer.ID.String(),
 		Company:     *NewCompanyResponse(company),
@@ -36,10 +39,8 @@ func NewCustomerResponse(customer models.Customer) *CustomerResponse {
 		LastName:    customer.LastNames,
 		Address:     customer.Address,
 		Phone:       customer.Phone,
-		CivilStatus: customer.CivilStatus,
+		CivilStatus: civilStatus.Name,
 		Reference:   customer.Reference,
-		Latitude:    customer.Latitude,
-		Longitude:   customer.Longitude,
 	}
 }
 
@@ -52,6 +53,11 @@ func NewCustomerResponse1(customer models.Customer) CustomerResponse {
 		return CustomerResponse{}
 	}
 
+	var civilStatus models.CivilStatus
+	if err := db.First(&civilStatus, customer.CivilStatusId).Error; err != nil {
+		return CustomerResponse{}
+	}
+
 	return CustomerResponse{
 		ID:          customer.ID.String(),
 		Company:     *NewCompanyResponse(company),
@@ -60,9 +66,7 @@ func NewCustomerResponse1(customer models.Customer) CustomerResponse {
 		LastName:    customer.LastNames,
 		Address:     customer.Address,
 		Phone:       customer.Phone,
-		CivilStatus: customer.CivilStatus,
+		CivilStatus: civilStatus.Name,
 		Reference:   customer.Reference,
-		Latitude:    customer.Latitude,
-		Longitude:   customer.Longitude,
 	}
 }

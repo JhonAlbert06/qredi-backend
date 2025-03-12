@@ -7,6 +7,18 @@ import (
 )
 
 func CreateData() {
+
+	civilStatus := []models.CivilStatus{
+		{ID: uuid.New(), Name: "Soltero"},
+		{ID: uuid.New(), Name: "Casado"},
+		{ID: uuid.New(), Name: "Divorciado"},
+		{ID: uuid.New(), Name: "Viudo"},
+	}
+
+	for _, status := range civilStatus {
+		DB.Create(&status)
+	}
+
 	spentType := []models.SpentType{
 		{ID: uuid.New(), Name: "Combustible"},
 		{ID: uuid.New(), Name: "Dieta"},

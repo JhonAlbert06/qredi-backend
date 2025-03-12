@@ -17,6 +17,7 @@ func SyncDatabase() {
 		&models.Route{},
 		&models.Spent{},
 		&models.SpentType{},
+		&models.CivilStatus{},
 		&models.User{},
 	)
 	if err != nil {

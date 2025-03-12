@@ -13,9 +13,7 @@ type Customer struct {
 	LastNames   string
 	Address     string
 	Phone       string
-	CivilStatus string
+	CivilStatusId string
 	Reference   string
-	Latitude    *string
-	Longitude   *string
 	gorm.Model
 }

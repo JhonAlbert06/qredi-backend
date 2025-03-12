@@ -48,6 +48,7 @@ func main() {
 	r.POST("/user/changeUserPassword", middleware.RequireAuth, controllers.ChangePassword)
 	r.GET("/user/loadUser", middleware.RequireAuth, controllers.LoadUser)
 	r.PUT("/user/changeUserImage", middleware.RequireAuth, controllers.UpdateUserImage)
+
 	r.GET("/image/user/:id", controllers.GetUserImage)
 
 	//Customer routes
@@ -55,9 +56,6 @@ func main() {
 	r.PUT("/customer", middleware.RequireAuth, controllers.UpdateCustomer)
 	r.GET("/customer", middleware.RequireAuth, controllers.SearchCustomerByParameter)
 	r.GET("/customer/:id", middleware.RequireAuth, controllers.SearchCustomerById)
-	r.GET("/image/customer/:id", controllers.GetCustomerImage)
-	r.GET("/image/customerMap/:id", controllers.GetCustomerImageMap)
-	r.PUT("/image/customer/:id", middleware.RequireAuth, controllers.UpdateCustomerImage)
 
 	//Route routes
 	r.POST("/route", middleware.RequireAuth, controllers.CreateRoute)

@@ -63,8 +63,8 @@ func NewLoanResponse(loan models.Loan) *LoanResponse {
 		signatureType = models.SignatureType{}
 	}
 
-	var date models.Date
-	date = models.ToDate(loan.Date)
+	//var date models.Date
+	date := models.ToDate(loan.Date)
 
 	var route models.Route
 	if err := db.First(&route, loan.RouteId).Error; err != nil {
@@ -120,8 +120,8 @@ func NewLoanResponse1(loan models.Loan) LoanResponse {
 		signatureType = models.SignatureType{}
 	}
 
-	var date models.Date
-	date = models.ToDate(loan.Date)
+	//var date models.Date
+	date := models.ToDate(loan.Date)
 
 	var route models.Route
 	if err := db.First(&route, loan.RouteId).Error; err != nil {
