@@ -2,12 +2,13 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"prestamosbackend/initializers"
 	"prestamosbackend/models"
 	"prestamosbackend/responses"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func CreateRoute(c *gin.Context) {
@@ -78,6 +79,13 @@ func SearchRouteByParameter(c *gin.Context) {
 		routesResposne = append(routesResposne, responses.NewRouteResponse1(route))
 	}
 
+	if len(routesResposne) == 0 {
+		c.JSON(http.StatusNotFound, 
+			[]responses.RouteResponse{},
+		)
+		return
+	}
+
 	c.JSON(http.StatusOK, routesResposne)
 }
 
@@ -124,8 +132,8 @@ func SearchRouteById(c *gin.Context) {
 
 func EditRoute(c *gin.Context) {
 	var body struct {
-		RouteID string `json:"id"`
-		Name    string `json:"name"`
+		RouteID string `json:"id" form:"id"`
+		Name    string `json:"name" form:"name"`
 	}
 
 	if err := c.Bind(&body); err != nil {

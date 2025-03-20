@@ -3,9 +3,6 @@ package controllers
 import (
 	"errors"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 	"net/http"
 	"prestamosbackend/initializers"
 	"prestamosbackend/models"
@@ -13,61 +10,12 @@ import (
 	"prestamosbackend/utils"
 	"sort"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
-func LoanConfirmation(c *gin.Context) {
-
-	var body struct {
-		CustomerId   string  `form:"customerId" json:"customerId"`
-		RouteId      string  `form:"routeId" json:"routeId"`
-		Amount       float32 `form:"amount" json:"amount"`
-		Interest     float32 `form:"interest" json:"interest"`
-		FeesQuantity int32   `form:"feesQuantity" json:"feesQuantity"`
-	}
-
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"Error": "Failed to read body",
-		})
-		return
-	}
-
-	var customer models.Customer
-	if err := initializers.DB.Find(&customer).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load customer",
-		})
-		return
-	}
-
-	var route models.Route
-	if err := initializers.DB.Where("id = ?", body.RouteId).Find(&route).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load route",
-		})
-		return
-	}
-
-	var loan = models.LoanConfirmation{
-		CustomerId:         customer.ID,
-		RouteId:            route.ID,
-		Amount:             body.Amount,
-		InterestAmount:     float32(body.Interest) / 100 * body.Amount,
-		InterestPercentage: body.Interest,
-		FeesQuantity:       body.FeesQuantity,
-		DateCreation:       time.Now(),
-		DateFirst:          time.Now().Add(7 * 24 * time.Hour),
-		DateLast:           time.Now().Add(time.Duration(body.FeesQuantity) * 7 * 24 * time.Hour),
-		AmountFinal:        float32(body.Interest) / 100 * body.Amount * float32(body.FeesQuantity),
-		ProfitsAmount:      float32(body.Interest)/100*body.Amount*float32(body.FeesQuantity) - body.Amount,
-		ProfitsPercentage:  (float32(body.Interest)/100*body.Amount*float32(body.FeesQuantity) - body.Amount) * 100 / body.Amount,
-	}
-
-	loanConfirmationResponse := responses.NewLoanConfirmationResponse(loan)
-
-	c.JSON(http.StatusOK, loanConfirmationResponse)
-
-}
 
 func CreateLoan(c *gin.Context) {
 
@@ -435,90 +383,6 @@ func SetLoanToPaid(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Loan payment processed successfully"})
 }
 
-func RenewLoanConfirmation(c *gin.Context) {
-
-	var body struct {
-		LoanId       string  `form:"loanId" json:"loanId"`
-		Amount       float32 `form:"amount" json:"amount"`
-		Interest     float32 `form:"interest" json:"interest"`
-		FeesQuantity int32   `form:"feesQuantity" json:"feesQuantity"`
-	}
-
-	if c.Bind(&body) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"Error": "Failed to read body",
-		})
-		return
-	}
-
-	//Get the loan
-	var loan models.Loan
-	if err := initializers.DB.Where("id = ?", body.LoanId).Find(&loan).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load loan",
-		})
-		return
-	}
-
-	var route models.Route
-	if err := initializers.DB.Where("id = ?", loan.RouteId).Find(&route).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load route",
-		})
-		return
-	}
-
-	var customer models.Customer
-	if err := initializers.DB.Find(&customer).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load customer",
-		})
-		return
-	}
-
-	if utils.HaveanactiveloanRenew(customer.ID.String()) {
-		c.JSON(http.StatusNotFound, gin.H{
-			"message": "El prestamo ta pago.",
-		})
-		return
-	}
-
-	var fees []models.Fee
-	if err := initializers.DB.Where("loan_id = ?", body.LoanId).Find(&fees).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to load fees",
-		})
-		return
-	}
-
-	oldTotalAmount := 0
-	oldInterestAmount := float32(loan.Interest) / 100 * loan.Amount
-	oldTotalAmount = int(oldInterestAmount*float32(loan.FeesQuantity)) - oldTotalAmount
-	totalAmount := body.Amount + float32(oldTotalAmount)
-
-	var reNewLoanConfirmationResponse = models.ReNewLoanConfirmation{
-		CustomerId:         customer.ID,
-		RouteId:            route.ID,
-		OldInterestAmount:  oldInterestAmount,
-		OldTotalAmount:     oldTotalAmount,
-		Amount:             body.Amount,
-		TotalAmount:        totalAmount,
-		InterestAmount:     float32(body.Interest) / 100 * totalAmount,
-		InterestPercentage: body.Interest,
-		FeesQuantity:       body.FeesQuantity,
-		DateCreation:       time.Now(),
-		DateFirst:          time.Now().Add(7 * 24 * time.Hour),
-		DateLast:           time.Now().Add(time.Duration(body.FeesQuantity) * 7 * 24 * time.Hour),
-		AmountFinal:        float32(body.Interest) / 100 * totalAmount * float32(body.FeesQuantity),
-		ProfitsAmount:      float32(body.Interest)/100*totalAmount*float32(body.FeesQuantity) - totalAmount,
-		ProfitsPercentage:  (float32(body.Interest)/100*totalAmount*float32(body.FeesQuantity) - totalAmount) * 100 / totalAmount,
-	}
-
-	loanConfirmationResponse := responses.NewReNewLoanConfirmationResponse(reNewLoanConfirmationResponse)
-
-	c.JSON(http.StatusOK, loanConfirmationResponse)
-}
-
 func CreateRenewLoan(c *gin.Context) {
 
 	var body struct {
@@ -570,7 +434,7 @@ func CreateRenewLoan(c *gin.Context) {
 		return
 	}
 
-	if !utils.HaveanactiveloanRenew(customer.ID.String()) {
+	if utils.HaveanactiveloanRenew(customer.ID.String()) {
 		c.JSON(http.StatusNotFound, gin.H{
 			"message": "El prestamo ta pago.",
 		})

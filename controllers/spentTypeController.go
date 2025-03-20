@@ -2,17 +2,18 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"prestamosbackend/initializers"
 	"prestamosbackend/models"
 	"prestamosbackend/responses"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func CreateTypeSpent(c *gin.Context) {
 	var body struct {
-		Name string `json:"name"`
+		Name string `json:"name" form:"name"`
 	}
 
 	if err := c.Bind(&body); err != nil {
@@ -57,6 +58,8 @@ func GetAllTypesSpent(c *gin.Context) {
 		})
 		return
 	}
+
+
 
 	var typeResponse []*responses.SpentTypeResponse
 	for _, Type := range spentType {

@@ -2,20 +2,21 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"prestamosbackend/initializers"
 	"prestamosbackend/models"
 	"prestamosbackend/responses"
 	"sort"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 func PayOffFee(c *gin.Context) {
 	var body struct {
-		ID     string  `json:"id"`
-		Amount float32 `json:"amount"`
+		ID     string  `json:"id" form:"id"`
+		Amount float32 `json:"amount" form:"amount"`
 	}
 
 	var db = initializers.DB

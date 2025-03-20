@@ -8,7 +8,6 @@ import (
 type FeeResponse struct {
 	ID            string                `json:"id" form:"id"`
 	Number        int32                 `json:"number" form:"number"`
-	SignatureType SignatureTypeResponse `json:"signatureType" form:"signatureType"`
 	ExpectedDate  models.Date           `json:"expectedDate" form:"expectedDate"`
 	Payments      []PaymentResponse     `json:"payments" form:"payments"`
 }
@@ -34,7 +33,6 @@ func NewFeeResponse(fee models.Fee) *FeeResponse {
 	return &FeeResponse{
 		ID:            fee.ID.String(),
 		Number:        fee.Number,
-		SignatureType: *NewSignatureTypeResponse(signatureType),
 		ExpectedDate:  models.ToDate(fee.ExpectedDate),
 		Payments:      paymentsResponse,
 	}

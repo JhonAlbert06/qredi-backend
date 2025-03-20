@@ -14,7 +14,6 @@ type LoanResponse struct {
 	LoanIsPaid    bool                   `json:"loanIsPaid" form:"loanIsPaid"`
 	IsRenewed     bool                   `json:"isRenewed" form:"isRenewed"`
 	IsCurrentLoan bool                   `json:"isCurrentLoan" form:"isCurrentLoan"`
-	SignatureType *SignatureTypeResponse `json:"signatureType" form:"signatureType"`
 	Date          models.Date            `json:"date" form:"date"`
 	Customer      *CustomerResponse      `json:"customer" form:"customer"`
 	Route         *RouteResponse         `json:"route" form:"route"`
@@ -103,7 +102,6 @@ func NewLoanResponse(loan models.Loan) *LoanResponse {
 		LoanIsPaid:    loan.LoanIsPaid,
 		IsRenewed:     loan.IsRenewed,
 		IsCurrentLoan: loan.IsCurrentLoan,
-		SignatureType: NewSignatureTypeResponse(signatureType),
 		Date:          date,
 		Customer:      NewCustomerResponse(customer),
 		Route:         NewRouteResponse(route),
@@ -160,7 +158,6 @@ func NewLoanResponse1(loan models.Loan) LoanResponse {
 		LoanIsPaid:    loan.LoanIsPaid,
 		IsRenewed:     loan.IsRenewed,
 		IsCurrentLoan: loan.IsCurrentLoan,
-		SignatureType: NewSignatureTypeResponse(signatureType),
 		Date:          date,
 		Customer:      NewCustomerResponse(customer),
 		Route:         NewRouteResponse(route),

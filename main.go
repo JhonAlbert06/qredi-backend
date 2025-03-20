@@ -47,8 +47,8 @@ func main() {
 
 	r.POST("/user/changeUserPassword", middleware.RequireAuth, controllers.ChangePassword)
 	r.GET("/user/loadUser", middleware.RequireAuth, controllers.LoadUser)
-	r.PUT("/user/changeUserImage", middleware.RequireAuth, controllers.UpdateUserImage)
 
+	r.PUT("/user/changeUserImage", middleware.RequireAuth, controllers.UpdateUserImage)
 	r.GET("/image/user/:id", controllers.GetUserImage)
 
 	//Customer routes
@@ -65,15 +65,13 @@ func main() {
 	r.PUT("/route", middleware.RequireAuth, controllers.EditRoute)
 
 	//Loan
-	r.POST("/loan/confirmation", middleware.RequireAuth, controllers.LoanConfirmation)
 	r.POST("/loan", middleware.RequireAuth, controllers.CreateLoan)
-	r.GET("/loan", middleware.RequireAuth, controllers.SearchLoanByParameter)
+	//r.GET("/loan", middleware.RequireAuth, controllers.SearchLoanByParameter)
 	r.GET("/loanDate", middleware.RequireAuth, controllers.GetLoansByDate)
 	r.GET("/loanParameter", middleware.RequireAuth, controllers.GetLoansByParameter)
 	r.GET("/loan/:id", middleware.RequireAuth, controllers.SearchLoanById)
 	r.PUT("/loan/:id", middleware.RequireAuth, controllers.PayOffLoan)
 	r.PUT("/loan/setLoanToPaid/:id", middleware.RequireAuth, controllers.SetLoanToPaid)
-	r.POST("/loan/reNew/confirmation", middleware.RequireAuth, controllers.RenewLoanConfirmation)
 	r.POST("/loan/reNew", middleware.RequireAuth, controllers.CreateRenewLoan)
 
 	//Fee routes
