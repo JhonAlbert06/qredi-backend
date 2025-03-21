@@ -92,3 +92,59 @@ func PayOffFee(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func UploadFees(c *gin.Context) {
+
+	var body []struct {
+		FeeId string `json:"feeId"`
+		Amount float32 `json:"amount"`
+	}
+
+	if err := c.Bind(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Failed to read body",
+		})
+		return
+	}
+
+
+	
+	user := c.MustGet("user").(models.User)
+
+	var db = initializers.DB
+
+	for _, feeAux := range body {
+
+		if feeAux.FeeId == "" {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "The feeId is required",
+			})
+			return
+		}
+
+		if feeAux.Amount <= 0 {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "The amount must be greater than 0",
+			})
+			return
+		}
+
+		var payment = models.Payment{
+			ID:         uuid.New(),
+			UserId:     user.ID,
+			FeeId:      uuid.MustParse(feeAux.FeeId),
+			PaidDate:   time.Now(),
+			PaidAmount: feeAux.Amount,
+		}
+
+		if err := db.Create(&payment).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to create payment",
+			})
+			return
+		}
+		
+	}
+	
+	c.JSON(http.StatusOK, gin.H{})
+}

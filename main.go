@@ -64,7 +64,7 @@ func main() {
 	r.GET("/route/:id", middleware.RequireAuth, controllers.SearchRouteById)
 	r.PUT("/route", middleware.RequireAuth, controllers.EditRoute)
 	r.GET("/route/download/:id", middleware.RequireAuth, controllers.DownloadRoute)
-	
+
 	//Loan
 	r.POST("/loan", middleware.RequireAuth, controllers.CreateLoan)
 	r.GET("/loan/:id", middleware.RequireAuth, controllers.SearchLoanById)
@@ -72,6 +72,7 @@ func main() {
 
 	//Fee routes
 	r.PUT("/fee/payOffFee", middleware.RequireAuth, controllers.PayOffFee)
+	r.PUT("/fee/uploadFees", middleware.RequireAuth, controllers.UploadFees)
 
 	// Spent routes
 	r.POST("/spent", middleware.RequireAuth, controllers.CreateSpent)
