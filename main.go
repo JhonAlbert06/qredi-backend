@@ -64,19 +64,15 @@ func main() {
 	r.GET("/route/:id", middleware.RequireAuth, controllers.SearchRouteById)
 	r.PUT("/route", middleware.RequireAuth, controllers.EditRoute)
 
+	// Get loan by route
+
 	//Loan
 	r.POST("/loan", middleware.RequireAuth, controllers.CreateLoan)
-	//r.GET("/loan", middleware.RequireAuth, controllers.SearchLoanByParameter)
-	r.GET("/loanDate", middleware.RequireAuth, controllers.GetLoansByDate)
-	r.GET("/loanParameter", middleware.RequireAuth, controllers.GetLoansByParameter)
 	r.GET("/loan/:id", middleware.RequireAuth, controllers.SearchLoanById)
-	r.PUT("/loan/:id", middleware.RequireAuth, controllers.PayOffLoan)
-	r.PUT("/loan/setLoanToPaid/:id", middleware.RequireAuth, controllers.SetLoanToPaid)
 	r.POST("/loan/reNew", middleware.RequireAuth, controllers.CreateRenewLoan)
 
 	//Fee routes
 	r.PUT("/fee/payOffFee", middleware.RequireAuth, controllers.PayOffFee)
-	r.GET("/fee", middleware.RequireAuth, controllers.GetFeesByDate)
 
 	// Spent routes
 	r.POST("/spent", middleware.RequireAuth, controllers.CreateSpent)

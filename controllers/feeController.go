@@ -5,8 +5,7 @@ import (
 	"net/http"
 	"prestamosbackend/initializers"
 	"prestamosbackend/models"
-	"prestamosbackend/responses"
-	"sort"
+
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -46,11 +45,24 @@ func PayOffFee(c *gin.Context) {
 	}
 
 	user := c.MustGet("user").(models.User)
-	interestAmount := float32(loan.Interest) / 100 * loan.Amount
+	feeInterestAmount := ((float32(loan.Interest) / 100) * loan.Amount) + (loan.Amount / float32(loan.FeesQuantity))
 
-	if body.Amount > float32(int(interestAmount)) {
+	var payments []models.Payment
+	if err := db.Where("fee_id = ?", fee.ID).Find(&payments).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "The amount cannot be greater",
+			"error": "Failed to get payments",
+		})
+		return
+	}
+
+	var totalPaid float32
+	for _, payment := range payments {
+		totalPaid += payment.PaidAmount
+	}
+
+	if totalPaid+body.Amount > feeInterestAmount {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "The amount cannot be greater, the total amount to pay is " + fmt.Sprintf("%.2f", feeInterestAmount - totalPaid),
 		})
 		return
 	}
@@ -70,35 +82,13 @@ func PayOffFee(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{})
-}
-
-func GetFeesByDate(c *gin.Context) {
-
-	date := c.Query("date")
-	routeId := c.Query("routeId")
-
-	db := initializers.DB
-
-	var fees []models.Fee
-	if err := db.Table("fees").
-		Select("fees.*").
-		Joins("JOIN loans ON loans.id = fees.loan_id").
-		Where("fees.expected_date = ? AND loans.route_id = ?", date, routeId).
-		Find(&fees).Error; err != nil {
+	fee.UpdatedAt = time.Now()
+	if err := db.Save(&fee).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to get fees",
+			"error": "Failed to update fee",
 		})
+		return
 	}
 
-	sort.Slice(fees, func(i, j int) bool {
-		return fees[i].Number < fees[j].Number
-	})
-
-	var feesResponse []*responses.FeeResponse
-	for _, fee := range fees {
-		feesResponse = append(feesResponse, responses.NewFeeResponse(fee))
-	}
-
-	c.JSON(http.StatusOK, feesResponse)
+	c.JSON(http.StatusOK, gin.H{})
 }
