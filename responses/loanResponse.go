@@ -57,11 +57,6 @@ type ReNewLoanConfirmationResponse struct {
 func NewLoanResponse(loan models.Loan) *LoanResponse {
 	db := initializers.DB
 
-	var signatureType models.SignatureType
-	if err := db.Where("loan_id = ?", loan.ID).First(&signatureType).Error; err != nil {
-		signatureType = models.SignatureType{}
-	}
-
 	//var date models.Date
 	date := models.ToDate(loan.Date)
 
@@ -112,11 +107,6 @@ func NewLoanResponse(loan models.Loan) *LoanResponse {
 
 func NewLoanResponse1(loan models.Loan) LoanResponse {
 	db := initializers.DB
-
-	var signatureType models.SignatureType
-	if err := db.Where("loan_id = ?", loan.ID).First(&signatureType).Error; err != nil {
-		signatureType = models.SignatureType{}
-	}
 
 	//var date models.Date
 	date := models.ToDate(loan.Date)

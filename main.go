@@ -63,9 +63,8 @@ func main() {
 	r.GET("/routes", middleware.RequireAuth, controllers.GetAllRoutes)
 	r.GET("/route/:id", middleware.RequireAuth, controllers.SearchRouteById)
 	r.PUT("/route", middleware.RequireAuth, controllers.EditRoute)
-
-	// Get loan by route
-
+	r.GET("/route/download/:id", middleware.RequireAuth, controllers.DownloadRoute)
+	
 	//Loan
 	r.POST("/loan", middleware.RequireAuth, controllers.CreateLoan)
 	r.GET("/loan/:id", middleware.RequireAuth, controllers.SearchLoanById)

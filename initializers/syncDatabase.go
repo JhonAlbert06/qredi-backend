@@ -7,7 +7,6 @@ import (
 
 func SyncDatabase() {
 	err := DB.AutoMigrate(
-		&models.SignatureType{},
 		&models.Payment{},
 		&models.Role{},
 		&models.Company{},

@@ -183,3 +183,27 @@ func EditRoute(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{})
 }
+
+func DownloadRoute(c *gin.Context) {
+	id := c.Param("id")
+
+	var route models.Route
+	if err := initializers.DB.Where("id = ?", id).First(&route).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	var loans []models.Loan
+	if err := initializers.DB.Where("route_id = ? and is_current_loan = true", route.ID).Find(&loans).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{})
+		return
+	}
+
+	var loansResponse []responses.LoanResponse
+	for _, loan := range loans {
+		loansResponse = append(loansResponse, responses.NewLoanResponse1(loan))
+	}
+
+	c.JSON(http.StatusOK, loansResponse)
+
+}

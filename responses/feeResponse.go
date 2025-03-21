@@ -15,11 +15,6 @@ type FeeResponse struct {
 func NewFeeResponse(fee models.Fee) *FeeResponse {
 	db := initializers.DB
 
-	var signatureType models.SignatureType
-	if err := db.First(&signatureType, fee.ID).Error; err != nil {
-		signatureType = models.SignatureType{}
-	}
-
 	var payments []models.Payment
 	if err := db.Where("fee_id = ?", fee.ID).Find(&payments).Error; err != nil {
 		payments = []models.Payment{}
